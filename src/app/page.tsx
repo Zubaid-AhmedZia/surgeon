@@ -1,103 +1,108 @@
+import LenisProvider from "@/components/LenisProvider";
+import Hero from "@/components/Hero";
+import ScrollSection from "@/components/ScrollSection";
+import Link from "next/link";
 import Image from "next/image";
+import ParallaxImage from "@/components/ParallaxImage";
+import BookingOptions from "@/components/BookingOptions";
+import VeinBackgroundClient from "@/components/VeinBackgroundClient";
 
-export default function Home() {
+export const dynamic = "force-static";
+
+export default function Page() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <LenisProvider>
+      <VeinBackgroundClient />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      <main className="pt-14">
+        <Hero />
+
+        <ScrollSection title="Hand Surgery, Reimagined" kicker="Expertise" >
+          <p>
+            Complex trauma, nerve & tendon reconstruction, microvascular free tissue transfer, congenital hand differences, rheumatoid and degenerative conditions — a comprehensive program focused on restoring <em>function</em> and refined appearance.
+          </p>
+          <ul className="grid md:grid-cols-2 gap-3 mt-6 list-disc list-inside text-porcelain/80">
+            <li>Replantation & microsurgery</li>
+            <li>Nerve/tendon repair & grafting</li>
+            <li>Post-burn contracture release</li>
+            <li>Arthritis & deformity correction</li>
+          </ul>
+          <div className="mt-6 flex">
+            <ParallaxImage
+              src="https://www.yourplasticsurgeryguide.com/wp-content/uploads/2019/03/nice-hands.jpg"
+              alt="Microsurgical precision"
+              strength={14}
+              sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 85vw"
+              className="aspect-[4/3] w-[85%] md:w-[360px] lg:w-[420px] rounded-2xl border border-white/10 bg-white/5 mx-auto md:mx-0"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+          </div>
+        </ScrollSection>
+
+        <ScrollSection title="Aesthetics with Restraint" kicker="Philosophy" >
+          <div className="mb-6 flex">
+            <ParallaxImage
+              src="https://bellevueent.com/wp-content/uploads/2023/01/BENT-Services-Facial-Reconstructive-Surgery-main-image-1024x683.jpeg"
+              alt="Refined, natural proportions"
+              strength={14}
+              sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 85vw"
+              className="aspect-[4/3] w-[85%] md:w-[360px] lg:w-[420px] rounded-2xl border border-white/10 bg-white/5 mx-auto md:mx-0"
+            />
+          </div>
+          <p>
+            Subtle, natural, and proportionate. Facial rejuvenation, rhinoplasty, breast & body contouring performed with a conservative ethos — prioritizing harmony over trend.
+          </p>
+        </ScrollSection>
+
+        <ScrollSection title="Outcomes You Can Trust" kicker="Cases" >
+          <p id="cases">
+            High-resolution before/after sets protected by patient consent and privacy controls. Each case includes approach, risks, recovery milestones, and functional outcomes.
+          </p>
+          <div className="mt-6 flex">
+            <ParallaxImage
+              src="https://cameronhealth.com/wp-content/uploads/2025/07/CameronHealth_Home.jpg"
+              alt="Structured case documentation"
+              strength={14}
+              sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 85vw"
+              className="aspect-[4/3] w-[85%] md:w-[360px] lg:w-[420px] rounded-2xl border border-white/10 bg-white/5 mx-auto md:mx-0"
+            />
+          </div>
+        </ScrollSection>
+
+        <ScrollSection title="Credentials & Ethos" kicker="About Dr. Yasmeen">
+          <p>
+            Fellowship-trained plastic & reconstructive surgeon. Academic appointments, peer-reviewed publications, and hospital credentials that support advanced microsurgical care.
+          </p>
+          <div className="mt-6 flex">
+            <ParallaxImage
+              src="https://nocamels.com/wp-content/uploads/2024/07/pexels-weverton-oliveira-927931218-202177861-1024x599.jpg"
+              alt="Credentials and ethos"
+              strength={14}
+              sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 85vw"
+              className="aspect-[4/3] w-[85%] md:w-[360px] lg:w-[420px] rounded-2xl border border-white/10 bg-white/5 mx-auto md:mx-0"
+            />
+          </div>
+        </ScrollSection>
+
+        <section id="book" className="px-6 pb-32">
+          <div className="max-w-3xl mx-auto rounded-2xl border border-white/10 p-8 bg-white/5 backdrop-blur">
+            <h3 className="font-display text-2xl mb-2">Book a Consultation</h3>
+            <p className="text-porcelain/80">Private clinic • Discreet scheduling • Evidence-based recommendations</p>
+            <BookingOptions />
+            <form className="grid md:grid-cols-2 gap-4 mt-6" action="/api/book" method="post">
+              <input type="text" name="company" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+              <input name="name" placeholder="Full name" className="bg-transparent border border-white/15 rounded-xl px-4 py-3" />
+              <input name="phone" placeholder="Phone / WhatsApp" className="bg-transparent border border-white/15 rounded-xl px-4 py-3" />
+              <input name="email" placeholder="Email" className="bg-transparent border border-white/15 rounded-xl px-4 py-3 md:col-span-2" />
+              <textarea name="message" placeholder="What would you like help with?" className="bg-transparent border border-white/15 rounded-xl px-4 py-3 md:col-span-2 min-h-[120px]" />
+              <button className="md:col-span-2 justify-self-start rounded-xl px-6 py-3 bg-surgical hover:brightness-110">Request Appointment</button>
+            </form>
+            <p className="mt-3 text-xs text-porcelain/60">By submitting, you agree that no medical advice is provided on this site; consultations determine candidacy & risks.</p>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <footer className="border-t border-white/10 py-10 text-center text-sm text-porcelain/60">
+        © {new Date().getFullYear()} Dr. Sobia Yasmeen — Hand & Plastic Surgery
       </footer>
-    </div>
+    </LenisProvider>
   );
 }
