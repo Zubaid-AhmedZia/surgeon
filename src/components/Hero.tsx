@@ -23,14 +23,16 @@ export default function Hero() {
             className="md:col-span-6 relative z-10"
             style={{ willChange: "transform, opacity" }}
             >
-              <motion.h1
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.35, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="font-display text-5xl md:text-7xl leading-[1.05]"
-              >
-                Dr. Sobia Yasmeen
-              </motion.h1>
+            {/* 3D moved to right column; heading stays first */}
+
+            <motion.h1
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.35, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="font-display text-5xl md:text-7xl leading-[1.05]"
+            >
+              Dr. Sobia Yasmeen
+            </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 18 }}
@@ -56,22 +58,48 @@ export default function Hero() {
               </a>
             </motion.div>
 
-            {/* Mobile portrait (smaller, above 3D) */}
+            {/* Portrait moved below text with full styling */}
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="md:hidden mt-8"
+              transition={{ duration: 0.8, delay: 0.75, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-8"
             >
-              <div className="relative w-[82%] mx-auto rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur">
-                <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(900px 300px at 70% 20%, rgba(255,255,255,0.08), transparent)" }} />
+              <motion.div
+                initial={{ scale: 0.98, rotate: -1 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-[64%] md:w-[52%] lg:w-[44%] rounded-3xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-lg"
+              >
+                <div className="absolute inset-0 pointer-events-none"
+                     style={{ background: "radial-gradient(1200px 400px at 70% 20%, rgba(255,255,255,0.08), transparent)" }} />
                 <div className="aspect-[4/5] relative">
                   <Image src={doctorSrc} alt="Dr. Sobia Yasmeen" fill priority unoptimized className="object-cover" />
                 </div>
-              </div>
+                <SutureOverlay />
+              </motion.div>
             </motion.div>
 
-            {/* Interactive anatomy preview (3D) */}
+            {/* Mobile: 3D hand below hero text */}
+            <div className="md:hidden mt-6">
+              {process.env.NEXT_PUBLIC_HAND_MODEL_URL ? (
+                <InteractiveHand3D />
+              ) : (process.env.NEXT_PUBLIC_SKETCHFAB_UID || process.env.NEXT_PUBLIC_SKETCHFAB_URL) ? (
+                <SketchfabEmbed uid={process.env.NEXT_PUBLIC_SKETCHFAB_UID} url={process.env.NEXT_PUBLIC_SKETCHFAB_URL} />
+              ) : (
+                <InteractiveHand3D />
+              )}
+            </div>
+          </motion.div>
+
+          {/* Right: 3D hand panel (was portrait) */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden md:block md:col-span-6 relative md:-mt-8"
+            style={{ willChange: "transform, opacity" }}
+          >
             {process.env.NEXT_PUBLIC_HAND_MODEL_URL ? (
               <InteractiveHand3D />
             ) : (process.env.NEXT_PUBLIC_SKETCHFAB_UID || process.env.NEXT_PUBLIC_SKETCHFAB_URL) ? (
@@ -79,29 +107,6 @@ export default function Hero() {
             ) : (
               <InteractiveHand3D />
             )}
-          </motion.div>
-
-          {/* Right: portrait panel */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden md:block md:col-span-6 relative"
-            style={{ willChange: "transform, opacity" }}
-          >
-            <motion.div
-              initial={{ scale: 0.96, rotate: -1 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 1.35, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="relative rounded-3xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-lg"
-            >
-              <div className="absolute inset-0 pointer-events-none"
-                   style={{ background: "radial-gradient(1200px 400px at 70% 20%, rgba(255,255,255,0.08), transparent)" }} />
-              <div className="aspect-[4/5] relative">
-                <Image src={doctorSrc} alt="Dr. Sobia Yasmeen" fill priority unoptimized className="object-cover" />
-              </div>
-              <SutureOverlay />
-            </motion.div>
           </motion.div>
         </div>
       </div>

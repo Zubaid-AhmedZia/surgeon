@@ -1,5 +1,5 @@
 "use client";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Environment, useGLTF, Bounds } from "@react-three/drei";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -60,6 +60,7 @@ export default function InteractiveHand3D({
     const id = setTimeout(() => setShowHint(false), 2400);
     return () => clearTimeout(id);
   }, []);
+  const controlsRef = useRef<any>(null);
 
   // Clip-plane wipe
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(1, 0, 0), 9999), []);
@@ -89,8 +90,41 @@ export default function InteractiveHand3D({
     return null;
   }
 
+  // Gentle clockwise spin + vertical float
+  function FloatSpinGroup({ children }: { children: React.ReactNode }) {
+    const ref = useRef<THREE.Group>(null!);
+    const t = useRef(0);
+    useFrame((_, dt) => {
+      t.current += dt;
+      if (!ref.current) return;
+      ref.current.rotation.y += dt * 0.25; // clockwise yaw
+      ref.current.position.y = Math.sin(t.current * 1.2) * 0.03; // soft bob
+    });
+    return <group ref={ref}>{children}</group>;
+  }
+
+  // Clamp zoom so users cannot zoom out and only slightly zoom in
+  function ControlClamp({ controls, zoomInFactor = 3 }: { controls: React.RefObject<any>; zoomInFactor?: number }) {
+    const { camera } = useThree();
+    const initialized = useRef(false);
+    const frames = useRef(0);
+    useFrame(() => {
+      if (initialized.current) return;
+      frames.current++;
+      const ctrl = controls.current;
+      if (!ctrl) return;
+      if (frames.current < 4) return; // let <Bounds> finish fitting
+      const target = ctrl.target || new THREE.Vector3();
+      const dist = camera.position.distanceTo(target);
+      ctrl.maxDistance = dist; // prevent zooming out past initial distance
+      ctrl.minDistance = Math.max(0.1, dist * zoomInFactor); // allow small zoom-in
+      initialized.current = true;
+    });
+    return null;
+  }
+
   return (
-    <div className="mt-6 w-full max-w-[280px] sm:max-w-[320px] mx-auto md:mx-0">
+    <div className="mt-6 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[540px] mx-auto md:mx-0">
       <div className="relative aspect-[4/5] overflow-visible">
         {hasSkin ? (
           <Canvas
@@ -109,31 +143,46 @@ export default function InteractiveHand3D({
             {/* Animate clipping plane inside Canvas to satisfy R3F hook rules */}
             <ClipPlaneAnimator plane={plane} reveal={reveal} />
             <ambientLight intensity={0.3} />
-            <directionalLight intensity={0.65} position={[2, 3, 4]} />
+            <directionalLight intensity={0.01} position={[2, 3, 4]} />
             <Environment preset="studio" />
 
             {/* Auto-fit models so they are never too large */}
-            <Bounds fit clip observe margin={2.0}>
-              {/* Outer skin model fades out when revealing */}
-              <group rotation={[0.1, -0.4, 0]}>
-                <FadeGroup opacityTarget={hasBones && reveal ? 0.08 : 1} clippingPlane={hasBones && reveal ? plane : null}>
-                  {/* @ts-ignore */}
-                  {hasSkin && <Model url={skinUrl} enhanceSkin={hasBones} />}
-                </FadeGroup>
-
-                {/* Inner bones model fades in */}
-                {hasBones && (
-                  <FadeGroup opacityTarget={reveal ? 1 : 0}>
+            <Bounds fit clip observe margin={1.2}>
+              {/* Soft float + spin for engagement */}
+              <FloatSpinGroup>
+                {/* Outer skin model fades out when revealing */}
+                <group rotation={[0.1, -0.4, 0]}>
+                  <FadeGroup opacityTarget={hasBones && reveal ? 0.08 : 1} clippingPlane={hasBones && reveal ? plane : null}>
                     {/* @ts-ignore */}
-                    <group>
-                      <Model url={bonesUrl} />
-                    </group>
+                    {hasSkin && <Model url={skinUrl} enhanceSkin={hasBones} />}
                   </FadeGroup>
-                )}
-              </group>
+
+                  {/* Inner bones model fades in */}
+                  {hasBones && (
+                    <FadeGroup opacityTarget={reveal ? 1 : 0}>
+                      {/* @ts-ignore */}
+                      <group>
+                        <Model url={bonesUrl} />
+                      </group>
+                    </FadeGroup>
+                  )}
+                </group>
+              </FloatSpinGroup>
             </Bounds>
 
-            <OrbitControls makeDefault enablePan={false} minPolarAngle={Math.PI / 3} maxPolarAngle={(Math.PI / 2) + 0.3} enableDamping dampingFactor={0.08} rotateSpeed={0.6} />
+            <OrbitControls
+              ref={controlsRef}
+              makeDefault
+              enablePan={false}
+              enableZoom
+              minPolarAngle={Math.PI / 4}
+              maxPolarAngle={(Math.PI / 2) + 0.3}
+              enableDamping
+              dampingFactor={0.08}
+              rotateSpeed={0.6}
+              zoomSpeed={0.6}
+            />
+            <ControlClamp controls={controlsRef} zoomInFactor={0.85} />
           </Canvas>
         ) : (
           <div className="absolute inset-0 grid place-items-center p-6 text-center text-sm text-porcelain/70">
