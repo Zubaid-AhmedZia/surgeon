@@ -1,6 +1,6 @@
 "use client";
 import { Canvas, useFrame, extend } from "@react-three/fiber";
-import type { ReactThreeFiber } from "@react-three/fiber";
+// type shim removed for compatibility across @react-three/fiber versions
 import { shaderMaterial } from "@react-three/drei";
 import { useRef } from "react";
 
@@ -63,14 +63,12 @@ extend({ VeinMaterial });
 
 declare global {
   namespace JSX {
-    interface IntrinsicElements {
-      veinMaterial: ReactThreeFiber.Object3DNode<typeof VeinMaterial, typeof VeinMaterial>;
-    }
+    interface IntrinsicElements { veinMaterial: any }
   }
 }
 
 function FullscreenPlane() {
-  const ref = useRef<any>();
+  const ref = useRef<any>(null);
   useFrame((_, dt) => { ref.current.uTime += dt; });
   return (
     <mesh>

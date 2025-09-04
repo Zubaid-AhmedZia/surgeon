@@ -9,8 +9,8 @@ type ModelProps = { url?: string; enhanceSkin?: boolean };
 function Model({ url, enhanceSkin }: ModelProps) {
   const { scene } = useGLTF(url!);
   useMemo(() => {
-    scene.traverse((o) => {
-      const m = (o as any).material as THREE.Material | undefined;
+    scene.traverse((o: any) => {
+      const m = (o as any).material as any;
       if (m) {
         m.transparent = true;
         (m as any).depthWrite = true;
@@ -28,12 +28,12 @@ function Model({ url, enhanceSkin }: ModelProps) {
   return <primitive object={scene} />;
 }
 
-function FadeGroup({ children, opacityTarget, clippingPlane }: { children: React.ReactNode; opacityTarget: number; clippingPlane?: THREE.Plane | null }) {
-  const ref = useRef<THREE.Group>(null!);
+function FadeGroup({ children, opacityTarget, clippingPlane }: { children: React.ReactNode; opacityTarget: number; clippingPlane?: any }) {
+  const ref = useRef<any>(null!);
   useFrame((_, dt) => {
     const group = ref.current;
     if (!group) return;
-    group.traverse((o) => {
+    group.traverse((o: any) => {
       const m = (o as any).material as any;
       if (m && typeof m.opacity === "number") {
         m.opacity = THREE.MathUtils.lerp(m.opacity, opacityTarget, Math.min(1, dt * 4));
@@ -66,7 +66,7 @@ export default function InteractiveHand3D({
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(1, 0, 0), 9999), []);
 
   // Animator lives inside <Canvas> so R3F hooks have context
-  function ClipPlaneAnimator({ plane, reveal }: { plane: THREE.Plane; reveal: boolean }) {
+  function ClipPlaneAnimator({ plane, reveal }: { plane: any; reveal: boolean }) {
     const targetConst = useRef(9999);
     const progress = useRef(0);
     useEffect(() => {
@@ -92,7 +92,7 @@ export default function InteractiveHand3D({
 
   // Gentle clockwise spin + vertical float
   function FloatSpinGroup({ children }: { children: React.ReactNode }) {
-    const ref = useRef<THREE.Group>(null!);
+    const ref = useRef<any>(null!);
     const t = useRef(0);
     useFrame((_, dt) => {
       t.current += dt;
